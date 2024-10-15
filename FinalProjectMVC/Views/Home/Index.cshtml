@@ -1,0 +1,20 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center" style="padding: 50px; background-color: #f0f8ff; min-height: 100vh;">
+    <h1 class="display-4" style="color: #4a4a4a; margin-bottom: 30px;">Welcome to Our Application!</h1>
+    <p style="color: #4a4a4a; font-size: 18px; margin-bottom: 50px;">
+        Get started by logging in or signing up to explore more.
+    </p>
+
+    <div style="display: flex; justify-content: center; gap: 20px;">
+        <a href="@Url.Action("Login", "Auth")" class="btn btn-primary" style="background-color: #87CEEB; border: none; color: white; padding: 10px 20px; font-size: 16px; border-radius: 5px; text-transform: uppercase;">
+            Login
+        </a>
+
+        <a href="@Url.Action("Signup", "Auth")" class="btn btn-secondary" style="background-color: #4a4a4a; border: none; color: white; padding: 10px 20px; font-size: 16px; border-radius: 5px; text-transform: uppercase;">
+            Signup
+        </a>
+    </div>
+</div>

@@ -30,12 +30,18 @@ namespace FinalProject
             })
             .AddCookie(options =>
             {
-                options.LoginPath = "/auth/login";
+                options.LoginPath = "/api/auth/login";
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
                 options.SlidingExpiration = true;
                 options.Cookie.HttpOnly = true;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
+
+            builder.Services.AddAuthorization();
+
+            // Registering the Authentication Service
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddScoped<AuthenticationService>();
 
             // Registring Swagger in Program.cs
             builder.Services.AddEndpointsApiExplorer();

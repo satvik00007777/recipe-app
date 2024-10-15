@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
 using FinalProject.DTOs;
 using FinalProject.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ActionConstraints;
-using Microsoft.EntityFrameworkCore;
 using FinalProject.Services;
-using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FinalProject.Controllers
 {
@@ -18,12 +15,22 @@ namespace FinalProject.Controllers
         private readonly FinalProjectDbContext _context;
         private readonly IMapper _mapper;
         private readonly PasswordHashingService _passwordHashingService;
+        private readonly AuthenticationService _authenticationService;
 
-        public AuthController(FinalProjectDbContext context, IMapper mapper, PasswordHashingService passwordHashingService)
+        public AuthController(FinalProjectDbContext context, IMapper mapper, PasswordHashingService passwordHashingService, AuthenticationService authenticationService)
         {
             _context = context;
             _mapper = mapper;
             _passwordHashingService = passwordHashingService;
+            _authenticationService = authenticationService;
+
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Hello()
+        {
+            return Ok(new { Message = "You're Now Accessing the Authorized Page!!" });
         }
 
         [HttpPost("signup")]
@@ -57,6 +64,8 @@ namespace FinalProject.Controllers
             {
                 return Unauthorized("Invalid Username or Password");
             }
+
+            await _authenticationService.SignInAsync(user.Username);
 
             return Ok(new { Message = "You have been Logged In Successfully" });
         }
