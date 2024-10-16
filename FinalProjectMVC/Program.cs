@@ -9,6 +9,11 @@ namespace FinalProjectMVC
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            // Adding the HttpClient Service
+            builder.Services.AddHttpClient();
+
+            builder.Services.AddAuthentication();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

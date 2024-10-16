@@ -1,0 +1,81 @@
+﻿@{
+    ViewData["Title"] = "Select Your Recipe Categories";
+}
+
+<h2 class="text-center" style="color: #4a90e2;">Select Your Recipe Categories</h2>
+
+<div class="container mt-4" style="max-width: 600px; background-color: #f0f4f8; padding: 20px; border-radius: 8px;">
+    <form id="categoryForm" method="post" action="/Home/SubmitCategories">
+        <div class="form-group">
+            <label style="color: #4a90e2;">Please select at least 3 categories (maximum 15):</label>
+
+            <div class="category-list mt-3" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                <div>
+                    <input type="checkbox" name="categories" value="Italian" id="category1">
+                    <label for="category1" style="color: #333;">Italian</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="categories" value="Chinese" id="category2">
+                    <label for="category2" style="color: #333;">Chinese</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="categories" value="Indian" id="category3">
+                    <label for="category3" style="color: #333;">Indian</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="categories" value="Mexican" id="category4">
+                    <label for="category4" style="color: #333;">Mexican</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="categories" value="American" id="category5">
+                    <label for="category5" style="color: #333;">American</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="categories" value="Japanese" id="category6">
+                    <label for="category6" style="color: #333;">Japanese</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="categories" value="Korean" id="category7">
+                    <label for="category7" style="color: #333;">Korean</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="categories" value="Thai" id="category8">
+                    <label for="category8" style="color: #333;">Thai</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="categories" value="Spanish" id="category9">
+                    <label for="category9" style="color: #333;">Spanish</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="categories" value="French" id="category10">
+                    <label for="category10" style="color: #333;">French</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="categories" value="Greek" id="category11">
+                    <label for="category11" style="color: #333;">Greek</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="categories" value="Mediterranean" id="category12">
+                    <label for="category12" style="color: #333;">Mediterranean</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="categories" value="Vietnamese" id="category13">
+                    <label for="category13" style="color: #333;">Vietnamese</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="categories" value="Lebanese" id="category14">
+                    <label for="category14" style="color: #333;">Lebanese</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="categories" value="Caribbean" id="category15">
+                    <label for="category15" style="color: #333;">Caribbean</label>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary" style="background-color: #4a90e2; border: none;">Submit</button>
+        </div>
+    </form>
+</div>
