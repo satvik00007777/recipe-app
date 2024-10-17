@@ -1,5 +1,6 @@
 ﻿using FinalProjectMVC.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Text.Json;
 
@@ -8,6 +9,7 @@ namespace FinalProjectMVC.Controllers
     public class AuthController : Controller
     {
         private readonly HttpClient _httpClient;
+        
 
         public AuthController(HttpClient httpClient)
         {
@@ -55,6 +57,29 @@ namespace FinalProjectMVC.Controllers
 
             ViewBag.ErrorMessage = "User already exists!";
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public IActionResult Preferences()
+        {
+            return View(); 
+        }
+
+        [HttpPost]
+        public IActionResult SavePreferences(List<string> selectedPreferences)
+        {
+            var userId = 1;
+
+            var preferences = string.Join(",", selectedPreferences);
+
+            var user = _context.Users.Find(userId);
+            if (user != null)
+            {
+                user.Preferences = preferences;
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("RecipePage", "Recipes");
         }
     }
 }
