@@ -65,21 +65,21 @@ namespace FinalProjectMVC.Controllers
             return View(); 
         }
 
-        [HttpPost]
-        public IActionResult SavePreferences(List<string> selectedPreferences)
-        {
-            var userId = 1;
+        //[HttpPost]
+        //public IActionResult SavePreferences(List<string> selectedPreferences)
+        //{
+        //    var userId = 1;
 
-            var preferences = string.Join(",", selectedPreferences);
+        //    var preferences = string.Join(",", selectedPreferences);
 
-            var user = _context.Users.Find(userId);
-            if (user != null)
-            {
-                user.Preferences = preferences;
-                _context.SaveChanges();
-            }
+        //    var user = _context.Users.Find(userId);
+        //    if (user != null)
+        //    {
+        //        user.Preferences = preferences;
+        //        _context.SaveChanges();
+        //    }
 
-            return RedirectToAction("RecipePage", "Recipes");
-        }
+        //    return RedirectToAction("RecipePage", "Recipes");
+        //}
     }
 }
