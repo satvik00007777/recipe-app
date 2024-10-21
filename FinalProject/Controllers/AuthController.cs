@@ -5,6 +5,7 @@ using FinalProject.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace FinalProject.Controllers
 {
@@ -16,14 +17,15 @@ namespace FinalProject.Controllers
         private readonly IMapper _mapper;
         private readonly PasswordHashingService _passwordHashingService;
         private readonly AuthenticationService _authenticationService;
+        private readonly EmailService _emailService;
 
-        public AuthController(FinalProjectDbContext context, IMapper mapper, PasswordHashingService passwordHashingService, AuthenticationService authenticationService)
+        public AuthController(FinalProjectDbContext context, IMapper mapper, PasswordHashingService passwordHashingService, AuthenticationService authenticationService, EmailService emailService)
         {
             _context = context;
             _mapper = mapper;
             _passwordHashingService = passwordHashingService;
             _authenticationService = authenticationService;
-
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -37,7 +39,7 @@ namespace FinalProject.Controllers
         public async Task<IActionResult> Signup([FromBody] SignupDto signupDto)
         {
             var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == signupDto.Username);
-            if(existingUser != null)
+            if (existingUser != null)
             {
                 return BadRequest("User Already Exists!!");
             }
@@ -46,9 +48,15 @@ namespace FinalProject.Controllers
             newUser.Password = _passwordHashingService.HashPassword(newUser.Password);
 
             _context.Users.Add(newUser);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            } catch(Exception ex)
+            {
 
-            return Ok("User Created Successfully");
+            }
+
+            return Ok("User Created Successfully. Please check your email to verify your account.");
         }
 
         [HttpPost("login")]
@@ -70,34 +78,35 @@ namespace FinalProject.Controllers
             return Ok(new { Message = "You have been Logged In Successfully" });
         }
 
-        [HttpPost("{userId}")]
-        public IActionResult SetPreferences(int userId, [FromBody] PreferencesDto preferencesDto)
+        [HttpPost("SubmitPreferences")]
+        [Authorize]
+        public async Task<IActionResult> SubmitPreferences([FromBody] string[] categories)
         {
-            var user = _context.Users.FirstOrDefault(u => u.UserId == userId);
+            var userId = GetCurrentUserId();
+
+            var user = await _context.Users.FindAsync(userId);
             if (user == null)
             {
-                return NotFound("User not found");
+                return NotFound("User not found.");
             }
 
-            var preferences = string.Join(",", preferencesDto.SelectedPreferences);
+            // Save the preferences as a comma-separated string
+            user.Preferences = string.Join(",", categories);
+            await _context.SaveChangesAsync();
 
-            user.Preferences = preferences;
-
-            _context.SaveChanges();
-
-            return Ok("Preferences saved successfully");
+            return Ok("Preferences saved successfully.");
         }
 
-        [HttpGet("{userId}")]
-        public IActionResult GetPreferences(int userId)
+        private int GetCurrentUserId()
         {
-            var user = _context.Users.FirstOrDefault(u => u.UserId == userId);
-            if (user == null)
+            // To get the user ID from the claims
+            var claim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (claim == null)
             {
-                return NotFound("User not found");
+                throw new UnauthorizedAccessException("User ID not found in claims.");
             }
 
-            return Ok(new { user.Preferences });
+            return int.Parse(claim.Value);
         }
     }
 }

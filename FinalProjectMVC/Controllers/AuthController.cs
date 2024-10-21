@@ -1,6 +1,5 @@
 ﻿using FinalProjectMVC.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Text.Json;
 
@@ -47,39 +46,43 @@ namespace FinalProjectMVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Signup(SignupDto signupDto)
         {
+            if(!ModelState.IsValid)
+            {
+                return View(signupDto);
+            }
+
             var jsonContent = new StringContent(JsonSerializer.Serialize(signupDto), Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("auth/signup", jsonContent);
+            var response = await _httpClient.PostAsync("Auth/Signup", jsonContent);
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index", "Preference");
+                return RedirectToAction("Preferences", "Auth");
             }
 
             ViewBag.ErrorMessage = "User already exists!";
             return RedirectToAction("Index", "Home");
         }
 
-        [HttpGet]
-        public IActionResult Preferences()
+        [HttpPost]
+        public async Task<IActionResult> SubmitCategories(string[] categories)
         {
-            return View(); 
+            // To check whether min. seleted categories are 3 or not.
+            if (categories.Length < 3)
+            {
+                ViewBag.ErrorMessage = "Please select at least 3 categories.";
+                return View("SelectCategories");
+            }
+
+            var jsonContent = new StringContent(JsonSerializer.Serialize(categories), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("Auth/SubmitPreferences", jsonContent);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index", "Recipe"); // Redirect to the recipe page or wherever needed
+            }
+
+            ViewBag.ErrorMessage = "Failed to submit categories.";
+            return View("SelectCategories");
         }
-
-        //[HttpPost]
-        //public IActionResult SavePreferences(List<string> selectedPreferences)
-        //{
-        //    var userId = 1;
-
-        //    var preferences = string.Join(",", selectedPreferences);
-
-        //    var user = _context.Users.Find(userId);
-        //    if (user != null)
-        //    {
-        //        user.Preferences = preferences;
-        //        _context.SaveChanges();
-        //    }
-
-        //    return RedirectToAction("RecipePage", "Recipes");
-        //}
     }
 }

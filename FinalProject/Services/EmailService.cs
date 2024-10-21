@@ -1,36 +1,41 @@
-﻿using MimeKit;
-//using System.Net.Mail;
-using MailKit.Security;
-using MailKit.Net.Smtp;
+﻿using System.Net;
+using System.Net.Mail;
 
 namespace FinalProject.Services
 {
     public class EmailService
     {
-        private readonly IConfiguration _configuration;
+        private readonly string _smtpServer;
+        private readonly int _smtpPort;
+        private readonly string _smtpUser;
+        private readonly string _smtpPass;
 
-        public EmailService(IConfiguration configuration)
+        public EmailService(string smtpServer, int smtpPort, string smtpUser, string smtpPass)
         {
-            _configuration = configuration;
+            _smtpServer = smtpServer;
+            _smtpPort = smtpPort;
+            _smtpUser = smtpUser;
+            _smtpPass = smtpPass;
         }
 
-        public async Task SendEmailAsync(string toEmail, string subject, string body)
+        public async Task SendVerificationEmail(string toEmail, string verificationLink)
         {
-            var email = new MimeMessage();
-            email.From.Add(new MailboxAddress("Your App", _configuration["EmailSettings:SenderEmail"]));
-            email.To.Add(MailboxAddress.Parse(toEmail));
-            email.Subject = subject;
-            email.Body = new TextPart("html")
+            using (var message = new MailMessage())
             {
-                Text = body
-            };
+                message.From = new MailAddress(_smtpUser);
+                message.To.Add(new MailAddress(toEmail));
+                message.Subject = "Email Verification";
+                message.Body = $"Please verify your email by clicking the following link: {verificationLink}";
+                message.IsBodyHtml = true;
 
-            using var smtp = new SmtpClient();
-            smtp.Connect(_configuration["EmailSettings:SMTPServer"], int.Parse(_configuration["EmailSettings:Port"]), MailKit.Security.SecureSocketOptions.StartTls);
-            smtp.Authenticate(_configuration["EmailSettings:SenderEmail"], _configuration["EmailSettings:Password"]);
+                using (var client = new SmtpClient(_smtpServer, _smtpPort))
+                {
+                    client.Credentials = new NetworkCredential(_smtpUser, _smtpPass);
+                    client.EnableSsl = true;
 
-            await smtp.SendAsync(email);
-            smtp.Disconnect(true);
+                    await client.SendMailAsync(message);
+                }
+            }
         }
     }
 }
