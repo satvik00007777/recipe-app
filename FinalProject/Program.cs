@@ -73,6 +73,9 @@ namespace FinalProject
             // Adding the password hashing service
             builder.Services.AddScoped<PasswordHashingService>();
 
+            // Adding the Email Verification Service
+            //builder.Services.AddScoped<EmailService>();
+
             var app = builder.Build();
 
             // Swagger Integration

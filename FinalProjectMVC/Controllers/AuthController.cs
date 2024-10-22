@@ -46,43 +46,64 @@ namespace FinalProjectMVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Signup(SignupDto signupDto)
         {
-            if(!ModelState.IsValid)
-            {
-                return View(signupDto);
-            }
+            //if(!ModelState.IsValid)
+            //{
+            //    return View(signupDto);
+            //}
 
-            var jsonContent = new StringContent(JsonSerializer.Serialize(signupDto), Encoding.UTF8, "application/json");
+            //var jsonContent = new StringContent(JsonSerializer.Serialize(signupDto), Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("Auth/Signup", jsonContent);
-            if (response.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Preferences", "Auth");
-            }
+            //var response = await _httpClient.PostAsync("Auth/Signup", jsonContent);
+            //if (response.IsSuccessStatusCode)
+            //{
+            //    return RedirectToAction("Preferences", "Auth");
+            //}
 
-            ViewBag.ErrorMessage = "User already exists!";
-            return RedirectToAction("Index", "Home");
+            //ViewBag.ErrorMessage = "User already exists!";
+            //return RedirectToAction("Index", "Home");
+
+            TempData["SignupDto"] = JsonSerializer.Serialize(signupDto);
+
+            return RedirectToAction("Preferences", "Auth");
+        }
+
+        public IActionResult Preferences() { 
+            return View(); 
         }
 
         [HttpPost]
-        public async Task<IActionResult> SubmitCategories(string[] categories)
+        public async Task<IActionResult> SubmitPreferences(string[] categories)
         {
             // To check whether min. seleted categories are 3 or not.
             if (categories.Length < 3)
             {
                 ViewBag.ErrorMessage = "Please select at least 3 categories.";
-                return View("SelectCategories");
+                return View("Preferences");
             }
 
-            var jsonContent = new StringContent(JsonSerializer.Serialize(categories), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("Auth/SubmitPreferences", jsonContent);
+            var signupDtoJson = TempData["SignupDto"] as string;
+            if(signupDtoJson == null)
+            {
+                return RedirectToAction("Signup");
+            }
+
+            var signupDto = JsonSerializer.Deserialize<SignupDto>(signupDtoJson);
+
+            signupDto.Preferences = string.Join(",", categories);
+
+            Console.WriteLine(signupDto);
+
+            var jsonContent = new StringContent(JsonSerializer.Serialize(signupDto), Encoding.UTF8, "application/json");
+            //var response = await _httpClient.PostAsync("Auth/Login", jsonContent);
+            var response = await _httpClient.PostAsync("Auth/Signup", jsonContent);
 
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index", "Recipe"); // Redirect to the recipe page or wherever needed
+                return RedirectToAction("Index", "Recipe");
             }
 
-            ViewBag.ErrorMessage = "Failed to submit categories.";
-            return View("SelectCategories");
+            ViewBag.ErrorMessage = "Failed to submit preferences.";
+            return View("Preferences");
         }
     }
 }
