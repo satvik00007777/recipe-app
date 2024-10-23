@@ -46,22 +46,6 @@ namespace FinalProjectMVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Signup(SignupDto signupDto)
         {
-            //if(!ModelState.IsValid)
-            //{
-            //    return View(signupDto);
-            //}
-
-            //var jsonContent = new StringContent(JsonSerializer.Serialize(signupDto), Encoding.UTF8, "application/json");
-
-            //var response = await _httpClient.PostAsync("Auth/Signup", jsonContent);
-            //if (response.IsSuccessStatusCode)
-            //{
-            //    return RedirectToAction("Preferences", "Auth");
-            //}
-
-            //ViewBag.ErrorMessage = "User already exists!";
-            //return RedirectToAction("Index", "Home");
-
             TempData["SignupDto"] = JsonSerializer.Serialize(signupDto);
 
             return RedirectToAction("Preferences", "Auth");
