@@ -1,16 +1,4 @@
-﻿using Microsoft.Identity.Client;
-
-namespace FinalProject.Models;
-
-public class EdamamApiResponse
-{
-    public Hit[] hits { get; set; }
-}
-
-public class Hit
-{
-    public Recipe recipe { get; set; }
-}
+﻿namespace FinalProject.Models;
 
 public partial class Recipe
 {
@@ -29,9 +17,4 @@ public partial class Recipe
     public int? UserId { get; set; }
 
     public virtual User? User { get; set; }
-}
-
-public class Ingredient
-{
-    public string text { get; set; }
 }

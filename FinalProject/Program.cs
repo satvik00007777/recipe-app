@@ -13,6 +13,9 @@ namespace FinalProject
 
             builder.Services.AddControllers();
 
+            // Registering HttpClient
+            builder.Services.AddHttpClient();
+
             // Configuring the DBContext Service
             builder.Services.AddDbContext<FinalProjectDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Url"))
