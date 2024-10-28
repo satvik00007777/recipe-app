@@ -26,8 +26,19 @@ namespace FinalProjectMVC.Controllers
 
         private int GetLoggedInUserId()
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            return userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
+            //var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            //return userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
+
+            if(User.Identity.IsAuthenticated)
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if(userIdClaim != null)
+                {
+                    return int.Parse(userIdClaim.Value);
+                }
+            }
+
+            return 0;
         }
 
         private async Task<List<RecipeDto>> GetRecipesFromApi(int userId)

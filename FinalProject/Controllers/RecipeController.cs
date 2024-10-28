@@ -52,7 +52,7 @@ namespace FinalProject.Controllers
         private async Task<string> GetUserPreferences(int userId)
         {
             var user = await _context.Users.FindAsync(userId);
-            return user?.Preferences ?? "DefaultPreference";
+            return user?.Preferences ?? "Indian";
         }
     }
 }

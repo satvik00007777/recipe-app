@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 namespace FinalProjectMVC
 {
     public class Program
@@ -13,6 +15,15 @@ namespace FinalProjectMVC
             builder.Services.AddHttpClient();
 
             builder.Services.AddAuthentication();
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+            {
+                options.LoginPath = "/auth/login";
+                options.Cookie.Name = ".AspNetCore.Cookies";
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+            });
 
             var app = builder.Build();
 

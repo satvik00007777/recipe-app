@@ -13,11 +13,12 @@ namespace FinalProject.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task SignInAsync(string username)
+        public async Task SignInAsync(string username, int userId)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, username)
+                new Claim(ClaimTypes.Name, username),
+                new Claim(ClaimTypes.NameIdentifier, userId.ToString())
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

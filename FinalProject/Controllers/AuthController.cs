@@ -71,7 +71,7 @@ namespace FinalProject.Controllers
                 return Unauthorized("Invalid Username or Password");
             }
 
-            await _authenticationService.SignInAsync(user.Username);
+            await _authenticationService.SignInAsync(user.Username, user.UserId);
 
             return Ok(new { Message = "You have been Logged In Successfully" });
         }

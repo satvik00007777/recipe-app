@@ -1,6 +1,7 @@
 ﻿using FinalProject.DTOs;
 using FinalProject.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FinalProject.Controllers
 {
@@ -18,13 +19,38 @@ namespace FinalProject.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCustomRecipes()
         {
-            return Ok();
+            var recipes = await _context.Recipes.ToListAsync();
+
+            var recipesList = recipes.Select(r => new RecipeDto
+            {
+                Title = r.Title,
+                Ingredients = r.Ingredients,
+                Instructions = r.Instructions,
+                ImageUrl = r.ImageUrl ?? string.Empty,
+                Source = r.Source ?? "Custom"
+            }).ToList();
+
+            return Ok(recipesList);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCustomRecipe()
+        public async Task<IActionResult> GetCustomRecipe(int id)
         {
-            return Ok();
+            var recipe = await _context.Recipes.FindAsync(id);
+
+            if(recipe == null)
+                return NotFound();
+
+            var singleRecipe = new RecipeDto
+            {
+                Title = recipe.Title,
+                Ingredients = recipe.Ingredients,
+                Instructions = recipe.Instructions,
+                ImageUrl = recipe.ImageUrl ?? string.Empty,
+                Source = recipe.Source ?? "Custom"
+            };
+
+            return Ok(singleRecipe);
         }
 
         [HttpPost]
@@ -52,15 +78,36 @@ namespace FinalProject.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update()
+        public async Task<IActionResult> Update(int id, RecipeDto recipeDto)
         {
-            return Ok();
+            var recipe = await _context.Recipes.FindAsync(id);
+
+            if (recipe == null)
+                return NotFound();
+
+            recipe.Title = recipeDto.Title;
+            recipe.Ingredients = recipeDto.Ingredients;
+            recipe.Instructions = recipeDto.Instructions;
+            recipe.ImageUrl = recipeDto.ImageUrl;
+            recipe.Source = recipeDto.Source;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(recipe);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete()
+        public async Task<IActionResult> Delete(int id)
         {
-            return Ok();
+            var recipe = await _context.Recipes.FindAsync(id);
+
+            if (recipe == null)
+                return NotFound();
+
+            _context.Recipes.Remove(recipe);
+            await _context.SaveChangesAsync();
+
+            return Ok("Recipe has been successfully Deleted!!");
         }
     }
 }

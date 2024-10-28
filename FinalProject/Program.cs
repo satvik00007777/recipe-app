@@ -81,6 +81,9 @@ namespace FinalProject
 
             var app = builder.Build();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             // Swagger Integration
             if(app.Environment.IsDevelopment())
             {
