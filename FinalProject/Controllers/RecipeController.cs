@@ -1,7 +1,5 @@
 ﻿using FinalProject.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Policy;
 using System.Text.Json;
 
 namespace FinalProject.Controllers
@@ -29,7 +27,7 @@ namespace FinalProject.Controllers
             var url = $"https://api.edamam.com/search?q={preferences}&app_id={appId}&app_key={appKey}";
             var response = await _httpClient.GetAsync(url);
 
-            if(response.IsSuccessStatusCode)
+            if(response.IsSuccessStatusCode)    
             {
                 var reponseBody = await response.Content.ReadAsStringAsync();
                 var edamamResponse = JsonSerializer.Deserialize<EdamamApiResponse>(reponseBody);

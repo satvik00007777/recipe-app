@@ -2,6 +2,9 @@ using FinalProject.Models;
 using Microsoft.EntityFrameworkCore;
 using FinalProject.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace FinalProject
 {
@@ -15,6 +18,7 @@ namespace FinalProject
 
             // Registering HttpClient
             builder.Services.AddHttpClient();
+            //builder.Services.AddHttpContextAccessor();
 
             // Configuring the DBContext Service
             builder.Services.AddDbContext<FinalProjectDbContext>(options =>
@@ -24,27 +28,46 @@ namespace FinalProject
             // Configuring the Auto-Mappers in Program.cs
             builder.Services.AddAutoMapper(typeof(Program));
 
-            // Configurig the Cookie Authentication
+            // Configuring the JWT Token Authentication
             builder.Services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            })
-            .AddCookie(options =>
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
             {
-                options.LoginPath = "/api/auth/login";
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-                options.SlidingExpiration = true;
-                options.Cookie.HttpOnly = true;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:key"]))
+                };
             });
 
+            // Configurig the Cookie Authentication
+            //builder.Services.AddAuthentication(options =>
+            //{
+            //    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //})
+            //.AddCookie(options =>
+            //{
+            //    options.LoginPath = "/api/auth/login";
+            //    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+            //    options.SlidingExpiration = true;
+            //    options.Cookie.HttpOnly = true;
+            //    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            //});
+
             builder.Services.AddAuthorization();
+
 
             // Registering the Authentication Service
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped<AuthenticationService>();
+            builder.Services.AddScoped<TokenService>();
 
             // Registring Swagger in Program.cs
             builder.Services.AddEndpointsApiExplorer();

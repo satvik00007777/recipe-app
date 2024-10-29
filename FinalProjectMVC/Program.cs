@@ -1,3 +1,4 @@
+using FinalProjectMVC.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace FinalProjectMVC
@@ -10,6 +11,8 @@ namespace FinalProjectMVC
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddScoped<ApiClientService>();
 
             // Adding the HttpClient Service
             builder.Services.AddHttpClient();
@@ -24,6 +27,8 @@ namespace FinalProjectMVC
                 options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
                 options.Cookie.SameSite = SameSiteMode.Lax;
             });
+
+            builder.Services.AddAuthorization();
 
             var app = builder.Build();
 

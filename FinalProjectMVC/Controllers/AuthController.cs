@@ -30,6 +30,19 @@ namespace FinalProjectMVC.Controllers
             var response = await _httpClient.PostAsync("Auth/Login", jsonContent);
             if (response.IsSuccessStatusCode)
             {
+                var responseData = await response.Content.ReadAsStringAsync();
+                var responseObject = JsonSerializer.Deserialize<Dictionary<string, string>>(responseData);
+
+                if(responseObject != null && responseObject.TryGetValue("token", out string token))
+                {
+                    Response.Cookies.Append("JwtToken", token, new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        Expires = DateTime.UtcNow.AddMinutes(30)
+                    });
+                }
+
                 return RedirectToAction("Index", "Recipe");
             }
 
