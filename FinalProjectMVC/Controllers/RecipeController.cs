@@ -1,8 +1,6 @@
 ﻿using FinalProjectMVC.DTOs;
 using FinalProjectMVC.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using System.Text.Json;
 
 namespace FinalProjectMVC.Controllers
@@ -31,27 +29,6 @@ namespace FinalProjectMVC.Controllers
 
         private async Task<int> GetLoggedInUserId()
         {
-            //var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            //return userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
-
-            //if(User.Identity.IsAuthenticated)
-            //{
-            //    var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            //    if(userIdClaim != null)
-            //    {
-            //        return int.Parse(userIdClaim.Value);
-            //    }
-            //}
-
-            //var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
-
-            //if(userIdClaim != null)
-            //{
-            //    var userId = int.Parse(userIdClaim.Value);
-
-            //    return userId;
-            //}
-
             var user = _apiClientService.GetAuthenticatedClient();
             var response = await user.GetAsync("auth/userinfo");
 
@@ -60,7 +37,7 @@ namespace FinalProjectMVC.Controllers
                 var responseData = await response.Content.ReadAsStringAsync();
                 var userInfo = JsonSerializer.Deserialize<Dictionary<string, string>>(responseData);
 
-                if(userInfo != null && userInfo.TryGetValue("UserId", out string userId))
+                if(userInfo != null && userInfo.TryGetValue("userId", out string userId))
                 {
                     return int.Parse(userId);
                 }
@@ -78,7 +55,8 @@ namespace FinalProjectMVC.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var responseBody = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<RecipeDto>>(responseBody);
+                var a = JsonSerializer.Deserialize<List<RecipeDto>>(responseBody);
+                return a;
             }
 
             return new List<RecipeDto>();

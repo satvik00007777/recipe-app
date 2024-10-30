@@ -16,10 +16,19 @@ namespace FinalProject.Controllers
             _context = context;
         }
 
+        //public IActionResult GetUserInfo()
+        //{
+        //    var userId = User.FindFirst("id")?.Value;
+
+        //    return Ok(new { UserId = userId });
+        //}
+
         [HttpGet]
         public async Task<IActionResult> GetCustomRecipes()
         {
             var recipes = await _context.Recipes.ToListAsync();
+
+            //var userId = GetUserInfo();
 
             var recipesList = recipes.Select(r => new RecipeDto
             {
@@ -28,6 +37,7 @@ namespace FinalProject.Controllers
                 Instructions = r.Instructions,
                 ImageUrl = r.ImageUrl ?? string.Empty,
                 Source = r.Source ?? "Custom"
+
             }).ToList();
 
             return Ok(recipesList);

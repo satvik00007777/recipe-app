@@ -71,7 +71,6 @@ namespace FinalProjectMVC.Controllers
         [HttpPost]
         public async Task<IActionResult> SubmitPreferences(string[] categories)
         {
-            // To check whether min. seleted categories are 3 or not.
             if (categories.Length < 3)
             {
                 ViewBag.ErrorMessage = "Please select at least 3 categories.";
@@ -91,7 +90,7 @@ namespace FinalProjectMVC.Controllers
             Console.WriteLine(signupDto);
 
             var jsonContent = new StringContent(JsonSerializer.Serialize(signupDto), Encoding.UTF8, "application/json");
-            //var response = await _httpClient.PostAsync("Auth/Login", jsonContent);
+
             var response = await _httpClient.PostAsync("Auth/Signup", jsonContent);
 
             if (response.IsSuccessStatusCode)

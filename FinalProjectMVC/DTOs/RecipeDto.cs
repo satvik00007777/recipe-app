@@ -2,14 +2,14 @@
 {
     public class RecipeDto
     {
-        public string Title { get; set; }
+        public string title { get; set; }
 
-        public string Ingredients { get; set; }
+        public string ingredients { get; set; }
 
-        public string Instructions { get; set; }
+        public string instructions { get; set; }
 
-        public string ImageUrl { get; set; }
+        public string imageUrl { get; set; }
 
-        public string Source { get; set; }
+        public string source { get; set; }
     }
 }

@@ -82,7 +82,7 @@ namespace FinalProject.Controllers
         [HttpGet("userinfo")]
         public IActionResult GetUserInfo()
         {
-            var userId = User.FindFirst("userId")?.Value;
+            var userId = User.FindFirst("id")?.Value;
 
             return Ok(new { UserId = userId });
         }
