@@ -36,8 +36,8 @@ namespace FinalProject.Controllers
                 Ingredients = r.Ingredients,
                 Instructions = r.Instructions,
                 ImageUrl = r.ImageUrl ?? string.Empty,
-                Source = r.Source ?? "Custom"
-
+                Source = r.Source ?? "Custom",
+                RecipeId = r.RecipeId
             }).ToList();
 
             return Ok(recipesList);
@@ -57,7 +57,8 @@ namespace FinalProject.Controllers
                 Ingredients = recipe.Ingredients,
                 Instructions = recipe.Instructions,
                 ImageUrl = recipe.ImageUrl ?? string.Empty,
-                Source = recipe.Source ?? "Custom"
+                Source = recipe.Source ?? "Custom",
+                RecipeId = recipe.RecipeId
             };
 
             return Ok(singleRecipe);
@@ -90,6 +91,7 @@ namespace FinalProject.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, RecipeDto recipeDto)
         {
+            
             var recipe = await _context.Recipes.FindAsync(id);
 
             if (recipe == null)
@@ -100,6 +102,7 @@ namespace FinalProject.Controllers
             recipe.Instructions = recipeDto.Instructions;
             recipe.ImageUrl = recipeDto.ImageUrl;
             recipe.Source = recipeDto.Source;
+            //recipe.RecipeId = recipeDto.RecipeId;
 
             await _context.SaveChangesAsync();
 

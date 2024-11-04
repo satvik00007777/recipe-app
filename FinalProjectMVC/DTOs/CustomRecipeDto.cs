@@ -1,6 +1,6 @@
-﻿namespace FinalProject.DTOs
+﻿namespace FinalProjectMVC.DTOs
 {
-    public class RecipeDto
+    public class CustomRecipeDto
     {
         public int RecipeId { get; set; }
 

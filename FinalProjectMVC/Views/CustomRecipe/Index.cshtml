@@ -1,7 +1,41 @@
-﻿
+﻿@using FinalProjectMVC.DTOs
+@model List<CustomRecipeDto>
 @{
-    ViewData["Title"] = "Index";
+    ViewBag.Title = "Recipe List";
+    Layout = null;
 }
 
-<h1>Welcome to the Custom Recipe Page.</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe List</title>
+    <link rel="stylesheet" href="~/css/CustomRecipe.css">
+</head>
+<body>
+    <header>
+        <h1>Your Recipe HomePage</h1>
+    </header>
+
+    <div class="recipe-container">
+        @foreach (var recipe in Model)
+        {
+            <div class="recipe-item">
+                <h3>@recipe.Title</h3>
+                <a asp-action="Details" asp-route-id="@recipe.RecipeId">Details</a>
+                <a asp-action="Update" asp-route-id="@recipe.RecipeId">Update</a>
+                <form asp-action="Delete" asp-route-id="@recipe.RecipeId" method="post" style="display:inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            </div>
+        }
+    </div>
+
+    <div class="footer">
+        <a asp-action="MyRecipes" class="btn-left">My Recipes</a>
+        <a asp-action="Create" class="btn-right">Create New Recipe</a>
+    </div>
+</body>
+</html>
 

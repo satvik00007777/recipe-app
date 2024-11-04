@@ -1,0 +1,38 @@
+﻿@model FinalProjectMVC.DTOs.CustomRecipeDto
+@{
+    ViewBag.Title = "Edit Recipe";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Recipe</title>
+    <link rel="stylesheet" href="~/css/Update.css">
+</head>
+<body>
+    <h2>Edit Recipe</h2>
+    <form asp-action="Update" method="post">
+        <label>Title:</label>
+        <input type="text" asp-for="Title" required />
+
+        <label>Ingredients:</label>
+        <textarea asp-for="Ingredients" required></textarea>
+
+        <label>Instructions:</label>
+        <textarea asp-for="Instructions" required></textarea>
+
+        <label>Image URL:</label>
+        <input type="text" asp-for="ImageUrl" />
+
+        <label>Source:</label>
+        <input type="text" asp-for="Source" />
+
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>
+
+

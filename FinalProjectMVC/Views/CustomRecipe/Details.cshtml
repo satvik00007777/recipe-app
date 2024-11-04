@@ -1,0 +1,31 @@
+﻿@model FinalProjectMVC.DTOs.CustomRecipeDto
+@{
+    ViewBag.Title = "Recipe Details";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Details</title>
+    @* <link rel="stylesheet" href="~/css/Details.css"> *@
+</head>
+<body>
+    <h2>@Model.Title</h2>
+
+    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    {
+        <img src="@Model.ImageUrl" alt="@Model.Title" class="recipe-image" />
+    }
+    else
+    {
+        <p><em>No image available</em></p>
+    }
+
+    <p><strong>Ingredients:</strong> @Model.Ingredients</p>
+    <p><strong>Instructions:</strong> @Model.Instructions</p>
+    <p><strong>Source:</strong> @Model.Source</p>
+</body>
+</html>

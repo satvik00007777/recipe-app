@@ -1,0 +1,37 @@
+﻿@model FinalProjectMVC.DTOs.CustomRecipeDto
+@{
+    ViewBag.Title = "Create Recipe";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Recipe</title>
+    <link rel="stylesheet" href="~/css/CustomRecipe.css">
+</head>
+<body>
+    <h2>Create Recipe</h2>
+
+    <form asp-action="Create" method="post">
+        <label>Title:</label>
+        <input type="text" asp-for="Title" required />
+
+        <label>Ingredients:</label>
+        <textarea asp-for="Ingredients" required></textarea>
+
+        <label>Instructions:</label>
+        <textarea asp-for="Instructions" required></textarea>
+
+        <label>Image URL:</label>
+        <input type="text" asp-for="ImageUrl" />
+
+        <label>Source:</label>
+        <input type="text" asp-for="Source" />
+
+        <button type="submit">Create</button>
+    </form>
+</body>
+</html>
