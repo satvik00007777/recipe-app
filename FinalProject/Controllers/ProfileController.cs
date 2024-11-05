@@ -2,11 +2,11 @@
 using FinalProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
 namespace FinalProject.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProfileController : ControllerBase
@@ -18,33 +18,40 @@ namespace FinalProject.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<ProfileDto>> GetProfile()
+        [HttpGet("GetProfile")]
+        public async Task<ActionResult<ProfileDto>> GetProfile(int userId)
         {
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            var user = await _context.Users.FindAsync(userId);
-
-            if(user == null)
+            try
             {
-                return NotFound(new { Message = "User Not Found" });
+                var user = await _context.Users.FindAsync(userId);
+
+                if(user == null)
+                {
+                    return NotFound(new { Message = "User Not Found" });
+                }
+
+                var profile = new ProfileDto
+                {
+                    UserId = user.UserId,
+                    Name = user.Name,
+                    Username = user.Username,
+                    Email = user.Email,
+                };
+
+                return Ok(profile);
+            }
+            catch (Exception ex)
+            {
+
             }
 
-            var profile = new ProfileDto
-            {
-                UserId = user.UserId,
-                Name = user.Name,
-                Username = user.Username,
-                Email = user.Email,
-            };
-
-            return Ok(profile);
+            return Ok();
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateProfile(ProfileDto profileDto)
         {
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userId = int.Parse(User.FindFirstValue("id"));
             if(userId != profileDto.UserId)
             {
                 return BadRequest(new { Message = "Unable to update this" });
@@ -64,6 +71,14 @@ namespace FinalProject.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(new { Message = "Updated Successfully" });
+        }
+
+        [HttpGet("userinfo")]
+        public IActionResult GetUserInfo()
+        {
+            var userId = User.FindFirst("id")?.Value;
+
+            return Ok(new { UserId = userId });
         }
     }
 }

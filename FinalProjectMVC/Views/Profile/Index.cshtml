@@ -1,7 +1,22 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
-}
+﻿@model FinalProjectMVC.DTOs.ProfileDto
 
-<h1>Welcome to your Profile</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="~/css/Profile.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Profile</h2>
+        <h2>@ViewBag.Error</h2>
+        <p><strong>Name:</strong> @Model.Name</p>
+        <p><strong>Username:</strong> @Model.Username</p>
+        <p><strong>Email:</strong> @Model.Email</p>
 
+        <a href="@Url.Action("Edit", "Profile")" class="button">Edit Profile</a>
+    </div>
+</body>
+</html>
