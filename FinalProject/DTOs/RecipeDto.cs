@@ -4,6 +4,8 @@
     {
         public int RecipeId { get; set; }
 
+        public string UniqueId { get; set; }
+
         public string Title { get; set; }
 
         public string Ingredients { get; set; }

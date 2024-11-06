@@ -1,0 +1,46 @@
+﻿@model List<FinalProjectMVC.DTOs.RecipeDto>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Recipes</title>
+    <link rel="stylesheet" href="~/css/SavedRecipes.css">
+</head>
+<body>
+    <header>
+        <h1>Saved Recipes</h1>
+    </header>
+
+    <div class="container">
+        @if (Model != null && Model.Any())
+        {
+            <div class="recipe-list">
+                @foreach (var recipe in Model)
+                {
+                    <div class="recipe-item">
+                        <h3>@recipe.title</h3>
+                        <button onclick="showDetails('@recipe.UniqueId')">Details</button>
+                        <div id="details-@recipe.UniqueId" style="display:none;">
+                            <p><strong>Ingredients:</strong> @recipe.ingredients</p>
+                            <p><a href="@recipe.source" target="_blank">View Full Recipe</a></p>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p>No recipes saved.</p>
+        }
+    </div>
+
+    <script>
+        function showDetails(id) {
+            var details = document.getElementById("details-" + id);
+            details.style.display = details.style.display === "none" ? "block" : "none";
+        }
+    </script>
+</body>
+</html>
