@@ -38,7 +38,8 @@ namespace FinalProject.Controllers
                     Ingredients = string.Join(", ", hit.recipe.ingredients.Select(i => i.text)),
                     Instructions = hit.recipe.url,
                     ImageUrl = hit.recipe.image,
-                    Source = hit.recipe.source
+                    Source = hit.recipe.source,
+                    Uri = hit.recipe.uri
                 }).ToList();
 
                 return Ok(recipes);

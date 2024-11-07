@@ -39,7 +39,7 @@
                         <h3>@(string.IsNullOrEmpty(recipe.title) ? "No Title Available" : recipe.title)</h3>
                             <p><strong>Ingredients:</strong> @(string.IsNullOrWhiteSpace(recipe.ingredients) ? "No ingredients available" : recipe.ingredients)</p>
 
-                            <a asp-action="AddToFavorites" asp-controller="Favourites" asp-route-title="@recipe.title" asp-route-source="@recipe.source" asp-route-imageUrl="@recipe.imageUrl" class="btn btn-primary">Add to Favorites</a>
+                            <a asp-action="AddToFavorites" asp-controller="Favourites" asp-route-uri = "@recipe.uri" class="btn btn-primary">Add to Favorites</a>
                     </div>
                 </div>
             }

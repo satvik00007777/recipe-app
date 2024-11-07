@@ -15,5 +15,8 @@ namespace FinalProjectMVC.DTOs
         public string imageUrl { get; set; }
 
         public string source { get; set; }
+
+        public string uri { get; set; }
+
     }
 }

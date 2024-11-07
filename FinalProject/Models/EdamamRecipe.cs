@@ -21,6 +21,8 @@
         public string image { get; set; }
 
         public string source { get; set; }
+
+        public string uri { get; set; }
     }
 
     public class Ingredient

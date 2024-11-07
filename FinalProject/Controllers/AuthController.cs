@@ -15,15 +15,13 @@ namespace FinalProject.Controllers
         private readonly FinalProjectDbContext _context;
         private readonly IMapper _mapper;
         private readonly PasswordHashingService _passwordHashingService;
-        private readonly AuthenticationService _authenticationService;
         private readonly TokenService _tokenService;
 
-        public AuthController(FinalProjectDbContext context, IMapper mapper, PasswordHashingService passwordHashingService, AuthenticationService authenticationService, TokenService tokenService)
+        public AuthController(FinalProjectDbContext context, IMapper mapper, PasswordHashingService passwordHashingService, TokenService tokenService)
         {
             _context = context;
             _mapper = mapper;
             _passwordHashingService = passwordHashingService;
-            _authenticationService = authenticationService;
             _tokenService = tokenService;
         }
 
@@ -73,7 +71,6 @@ namespace FinalProject.Controllers
                 return Unauthorized("Invalid Username or Password");
             }
 
-            //await _authenticationService.SignInAsync(user.Username, user.UserId);
             var token = _tokenService.GenerateToken(user.UserId);
 
             return Ok(new { Token = token, Message = "You have been successfully logged in now" });

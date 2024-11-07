@@ -30,27 +30,29 @@ namespace FinalProjectMVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddToFavorites(string title, string source, string imageUrl)
+        public async Task<IActionResult> AddToFavorites(string uri)
         {
-            var httpClient = _apiClientService.GetAuthenticatedClient();
-            var uniqueId = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(title + source));
+            //var httpClient = _apiClientService.GetAuthenticatedClient();
+            //var uniqueId = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(title + source));
 
-            var favoriteRecipe = new
-            {
-                UniqueId = uniqueId,
-                Title = title,
-                Source = source,
-                ImageUrl = imageUrl
-            };
+            //var favoriteRecipe = new
+            //{
+            //    UniqueId = uniqueId,
+            //    Title = title,
+            //    Source = source,
+            //    ImageUrl = imageUrl
+            //};
 
-            var response = await httpClient.PostAsJsonAsync("favourites/add", favoriteRecipe);
+            //var response = await httpClient.PostAsJsonAsync("favourites/add", favoriteRecipe);
 
-            if (response.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Index");
-            }
+            //if (response.IsSuccessStatusCode)
+            //{
+            //    return RedirectToAction("Index");
+            //}
 
-            return View("Error");
+            //return View("Error");
+
+            return View(uri);
         }
 
         public IActionResult Error()
