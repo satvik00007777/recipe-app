@@ -26,7 +26,16 @@ namespace FinalProject.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCustomRecipes()
         {
-            var recipes = await _context.Recipes.ToListAsync();
+            var recipes = new List<Recipe>();
+            try
+            {
+
+
+                recipes = await _context.Recipes.ToListAsync();
+            } catch(Exception ex)
+            {
+
+            }
 
             //var userId = GetUserInfo();
 

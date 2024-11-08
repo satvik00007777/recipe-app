@@ -66,8 +66,9 @@ namespace FinalProject
 
             // Registering the Authentication Service
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            builder.Services.AddScoped<AuthenticationService>();
+            builder.Services.AddScoped<AccountRepository>();
             builder.Services.AddScoped<TokenService>();
+            builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
             // Registring Swagger in Program.cs
             builder.Services.AddEndpointsApiExplorer();

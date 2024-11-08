@@ -38,8 +38,7 @@ namespace FinalProject.Controllers
                     Ingredients = string.Join(", ", hit.recipe.ingredients.Select(i => i.text)),
                     Instructions = hit.recipe.url,
                     ImageUrl = hit.recipe.image,
-                    Source = hit.recipe.source,
-                    Uri = hit.recipe.uri
+                    Source = hit.recipe.source
                 }).ToList();
 
                 return Ok(recipes);
@@ -52,6 +51,35 @@ namespace FinalProject.Controllers
         {
             var user = await _context.Users.FindAsync(userId);
             return user?.Preferences ?? "Indian";
+        }
+
+        [HttpGet("Getfavourites")]
+        public async Task<IActionResult> GetFavourites(string uri)
+        {
+            var appId = "bd3f3c6f";
+            var appKey = "ffe96fc39d286b9877f112655d467bd9";
+
+            var apiUrl = $"https://api.edamam.com/search?q={uri}&app_id={appId}&app_key={appKey}";
+            var response = await _httpClient.GetAsync(apiUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var reponseBody = await response.Content.ReadAsStringAsync();
+                var edamamResponse = JsonSerializer.Deserialize<EdamamApiResponse>(reponseBody);
+
+                var recipe = edamamResponse.hits.Select(hit => new Recipe
+                {
+                    Title = hit.recipe.label,
+                    Ingredients = string.Join(", ", hit.recipe.ingredients.Select(i => i.text)),
+                    Instructions = hit.recipe.url,
+                    ImageUrl = hit.recipe.image,
+                    Source = hit.recipe.source
+                });
+
+                return Ok(recipe);
+            }
+
+            return BadRequest("Recipes cannot be retrieved");
         }
     }
 }

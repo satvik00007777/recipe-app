@@ -1,63 +1,64 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using FinalProjectMVC.DTOs;
-using FinalProjectMVC.Services;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using FinalProjectMVC.DTOs;
+using Microsoft.AspNetCore.Mvc;
 
-namespace FinalProjectMVC.Controllers
+public class FavouritesController : Controller
 {
-    public class FavouritesController : Controller
+    private readonly HttpClient _httpClient;
+
+    public FavouritesController(HttpClient httpClient)
     {
-        private readonly ApiClientService _apiClientService;
+        _httpClient = httpClient;
+    }
 
-        public FavouritesController(ApiClientService apiClientService)
+    public async Task<IActionResult> AddToFavourites(string uri)
+    {
+        if(string.IsNullOrEmpty(uri))
         {
-            _apiClientService = apiClientService;
+            return BadRequest("Invalid recipe URI.");
         }
 
-        public async Task<IActionResult> Index()
+        var recipe = await FetchRecipeFromUri(uri);
+
+        if(recipe == null)
         {
-            var httpClient = _apiClientService.GetAuthenticatedClient();
-            var response = await httpClient.GetAsync("favorites"); 
-            if (response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                var favorites = JsonSerializer.Deserialize<List<RecipeDto>>(content);
-                return View(favorites);
-            }
-            return View(new List<RecipeDto>());
+            return View("Error");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddToFavorites(string uri)
+        return View(recipe);
+    }
+
+    public async Task<IActionResult> Index(string uri)
+    {
+        if (string.IsNullOrEmpty(uri))
         {
-            //var httpClient = _apiClientService.GetAuthenticatedClient();
-            //var uniqueId = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(title + source));
-
-            //var favoriteRecipe = new
-            //{
-            //    UniqueId = uniqueId,
-            //    Title = title,
-            //    Source = source,
-            //    ImageUrl = imageUrl
-            //};
-
-            //var response = await httpClient.PostAsJsonAsync("favourites/add", favoriteRecipe);
-
-            //if (response.IsSuccessStatusCode)
-            //{
-            //    return RedirectToAction("Index");
-            //}
-
-            //return View("Error");
-
-            return View(uri);
+            return BadRequest("Invalid recipe URI.");
         }
 
-        public IActionResult Error()
+        var recipe = await FetchRecipeFromUri(uri);
+
+        if (recipe == null)
         {
-            return View();
+            return View("Error");
         }
+
+        return View(recipe);
+    }
+
+    [HttpGet]
+    public async Task<RecipeDto> FetchRecipeFromUri(string uri)
+    {
+        var apiUrl = $"https://localhost:7255/api/Recipe/GetFavourites?uri={uri}";
+        var response = await _httpClient.GetAsync(apiUrl);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            //var recipe = JsonSerializer.Deserialize<RecipeDto>(responseBody);
+
+            //return recipe;
+        }
+
+        return null;
     }
 }

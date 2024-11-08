@@ -1,4 +1,6 @@
-﻿namespace FinalProject.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace FinalProject.Models;
 
 public partial class Recipe
 {
@@ -17,6 +19,4 @@ public partial class Recipe
     public int? UserId { get; set; }
 
     public virtual User? User { get; set; }
-
-    public string Uri { get; set; }
 }

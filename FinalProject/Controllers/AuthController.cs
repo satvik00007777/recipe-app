@@ -12,17 +12,21 @@ namespace FinalProject.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly FinalProjectDbContext _context;
+        //private readonly FinalProjectDbContext _context;
         private readonly IMapper _mapper;
         private readonly PasswordHashingService _passwordHashingService;
         private readonly TokenService _tokenService;
+        private readonly IAccountRepository _accountRepository;
 
-        public AuthController(FinalProjectDbContext context, IMapper mapper, PasswordHashingService passwordHashingService, TokenService tokenService)
+
+
+        public AuthController(IMapper mapper, PasswordHashingService passwordHashingService, TokenService tokenService, IAccountRepository accountRepository)
         {
-            _context = context;
+            //_context = context;
             _mapper = mapper;
             _passwordHashingService = passwordHashingService;
             _tokenService = tokenService;
+            _accountRepository = accountRepository;
         }
 
         [HttpGet]
@@ -35,8 +39,8 @@ namespace FinalProject.Controllers
         [HttpPost("signup")]
         public async Task<IActionResult> Signup([FromBody] SignupDto signupDto)
         {
-            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == signupDto.Username);
-            if (existingUser != null)
+            var existingUser = await _accountRepository.GetUersByUserName(signupDto.Username);
+            if (existingUser.Username != null)
             {
                 return BadRequest("User Already Exists!!");
             }
@@ -45,14 +49,8 @@ namespace FinalProject.Controllers
             newUser.Password = _passwordHashingService.HashPassword(newUser.Password);
             newUser.Preferences = signupDto.Preferences;
 
-            _context.Users.Add(newUser);
-            try
-            {
-                await _context.SaveChangesAsync();
-            } catch(Exception ex)
-            {
-
-            }
+            _accountRepository.AddUsers(newUser);
+            
 
             return Ok("User Created Successfully.");
         }
@@ -60,8 +58,8 @@ namespace FinalProject.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == loginDto.Username);
-            if (user == null)
+            var user = await _accountRepository.GetUersByUserName(loginDto.Username);
+            if (user.Username == null)
             {
                 return Unauthorized("Invalid Username or Password");
             }
