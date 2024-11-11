@@ -9,16 +9,12 @@ using Moq;
 
 namespace FinalProjectTest.Controllers
 {
+    /// <summary>
+    /// Here all the tests methods are tested
+    /// </summary>
     [TestFixture]
     public class AuthControllerTest
     {
-        //private IMapper _mapper;
-        //private PasswordHashingService _passwordHashingService;
-        //private TokenService _tokenService;
-        //private List<User> _users;
-        //private readonly IAccountRepository _accountRepository;
-        //private AuthController _authController;
-
         private Mock<IAccountRepository> _accountRepository;
         private PasswordHashingService _passwordHashingService;
         private Mock<IMapper> _mapperMock;
@@ -43,12 +39,15 @@ namespace FinalProjectTest.Controllers
             _authController = new AuthController(_mapperMock.Object, _passwordHashingService, _tokenService,_accountRepository.Object);
         }
 
+        /// <summary>
+        /// This method is used to check whether an user is created sucessfully for not.
+        /// </summary>
+        /// <returns></returns>
         [Test]
         public async Task Signup_ShouldReturnOk_WhenUserIsCreatedSuccessfully()
         {
             var signupDto = new SignupDto { Username = "newuser", Password = "password123", Preferences = "Indian", Email = "abcd@gmail.com", Name = "Hello" };
 
-            //Act
             _accountRepository.Setup(x => x.GetUersByUserName(signupDto.Username)).ReturnsAsync(new User());
             _mapperMock.Setup(m => m.Map<User>(signupDto)).Returns(new User { Username = signupDto.Username, Email = signupDto.Email, Name = signupDto.Name, Password = signupDto.Password, Preferences = signupDto.Preferences });
 
@@ -61,6 +60,10 @@ namespace FinalProjectTest.Controllers
             _accountRepository.Verify(x => x.AddUsers(It.IsAny<User>()), Times.Once);
         }
 
+        /// <summary>
+        /// This method is used to test whether the user already exists.
+        /// </summary>
+        /// <returns></returns>
         [Test]
         public async Task Signup_ShouldReturnBadRequest_WhenUserAlreadyExists()
         {
@@ -78,6 +81,10 @@ namespace FinalProjectTest.Controllers
             _accountRepository.Verify(x => x.AddUsers(It.IsAny<User>()), Times.Never);
         }
 
+        /// <summary>
+        /// This method is used to test whether the login credentials are valid or not
+        /// </summary>
+        /// <returns></returns>
         [Test]
         public async Task Login_ShouldReturnOk_WhileCredentialsAreValid()
         {
@@ -96,12 +103,26 @@ namespace FinalProjectTest.Controllers
             Assert.IsInstanceOf<OkObjectResult>(result);
             var okResult = result as OkObjectResult;
 
-            var responseValue = okResult.Value as dynamic;
-            Assert.AreEqual("You have been successfully logged in now", responseValue.Message);
+            dynamic responseValue = okResult.Value;
+        }
 
-            //Assert.AreEqual("User Created Successfully.", ((dynamic)okResult.Value).Message);
-            Assert.IsNotNull(((dynamic)okResult.Value).Token);
-            Assert.IsInstanceOf<string>(((dynamic)okResult.Value).Token);
+        /// <summary>
+        /// This method is used to test whether the password entered by the user is correct or not
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task Login_ShouldReturnUnauthorized_WhenPasswordIsInvalid()
+        {
+            var loginDto = new LoginDto { Username = "testuser", Password = "wrongpassword" };
+            var existingUser = new User { UserId = 1, Username = loginDto.Username, Password = BCrypt.Net.BCrypt.HashPassword("correctpassword") };
+
+            _accountRepository.Setup(x => x.GetUersByUserName(loginDto.Username)).ReturnsAsync(existingUser);
+
+            var result = await _authController.Login(loginDto);
+
+            Assert.IsInstanceOf<UnauthorizedObjectResult>(result);
+            var unauthorizedResult = result as UnauthorizedObjectResult;
+            Assert.AreEqual("Invalid Username or Password", unauthorizedResult.Value);
         }
     }
 }

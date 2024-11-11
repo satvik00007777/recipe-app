@@ -1,6 +1,4 @@
-﻿using System.Security.Policy;
-
-namespace FinalProjectMVC.DTOs
+﻿namespace FinalProjectMVC.DTOs
 {
     public class RecipeDto
     {

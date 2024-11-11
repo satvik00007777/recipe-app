@@ -1,28 +1,34 @@
 ﻿using FinalProject.DTOs;
 using FinalProject.Models;
+using FinalProject.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace FinalProject.Controllers
 {
+    /// <summary>
+    /// This controller handles CRUD operations for custom recipes, allowing users to create, retrieve, update, and delete recipes.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class CustomRecipeController : ControllerBase
     {
-        private readonly FinalProjectDbContext _context;
+        private ICustomRecipeRepository _customRecipeRepository;
 
-        public CustomRecipeController(FinalProjectDbContext context)
+        /// <summary>
+        /// Constructor for CustomRecipeController. Injects the ICustomRecipeRepository service for managing recipe data.
+        /// </summary>
+        /// <param name="customRecipeRepository"></param>
+        public CustomRecipeController(ICustomRecipeRepository customRecipeRepository)
         {
-            _context = context;
+            _customRecipeRepository = customRecipeRepository;
         }
 
-        //public IActionResult GetUserInfo()
-        //{
-        //    var userId = User.FindFirst("id")?.Value;
-
-        //    return Ok(new { UserId = userId });
-        //}
-
+        /// <summary>
+        /// Function: GetCustomRecipes
+        /// Purpose: Retrieves a list of all custom recipes from the repository.
+        /// Return Type: Task<IActionResult> - An asynchronous action result containing a list of recipes or an empty list if none are found.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> GetCustomRecipes()
         {
@@ -30,14 +36,12 @@ namespace FinalProject.Controllers
             try
             {
 
+                recipes = await _customRecipeRepository.GetCustomRecipes();
 
-                recipes = await _context.Recipes.ToListAsync();
             } catch(Exception ex)
             {
 
             }
-
-            //var userId = GetUserInfo();
 
             var recipesList = recipes.Select(r => new RecipeDto
             {
@@ -52,12 +56,19 @@ namespace FinalProject.Controllers
             return Ok(recipesList);
         }
 
+        /// <summary>
+        /// Function: GetCustomRecipe
+        /// Purpose: Retrieves a single custom recipe by its ID.
+        /// Return Type: Task<IActionResult> - An asynchronous action result containing the requested recipe or a NotFound response if not found.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCustomRecipe(int id)
         {
-            var recipe = await _context.Recipes.FindAsync(id);
+            var recipe = await _customRecipeRepository.GetCustomRecipe(id);
 
-            if(recipe == null)
+            if (recipe == null)
                 return NotFound();
 
             var singleRecipe = new RecipeDto
@@ -73,6 +84,13 @@ namespace FinalProject.Controllers
             return Ok(singleRecipe);
         }
 
+        /// <summary>
+        /// Function: Create
+        /// Purpose: Creates a new custom recipe with the provided data from RecipeDto.
+        /// Return Type: Task<IActionResult> - An asynchronous action result with a success message upon creation, or BadRequest if the model state is invalid.
+        /// </summary>
+        /// <param name="recipeDto"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Create(RecipeDto recipeDto)
         {
@@ -91,17 +109,24 @@ namespace FinalProject.Controllers
                 UserId = null
             };
 
-            _context.Recipes.Add(recipe);
-            await _context.SaveChangesAsync();
+            await _customRecipeRepository.CreateRecipe(recipe);
 
             return Ok(new { Message = "New recipe has been Added Successfully!!" });
         }
 
+        /// <summary>
+        /// Function: Update
+        /// Purpose: Updates an existing custom recipe with the data provided in RecipeDto.
+        /// Return Type: Task<IActionResult> - An asynchronous action result containing the updated recipe, or NotFound if the recipe is not found.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="recipeDto"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, RecipeDto recipeDto)
         {
-            
-            var recipe = await _context.Recipes.FindAsync(id);
+
+            var recipe = await _customRecipeRepository.GetCustomRecipe(id);
 
             if (recipe == null)
                 return NotFound();
@@ -111,24 +136,23 @@ namespace FinalProject.Controllers
             recipe.Instructions = recipeDto.Instructions;
             recipe.ImageUrl = recipeDto.ImageUrl;
             recipe.Source = recipeDto.Source;
-            //recipe.RecipeId = recipeDto.RecipeId;
 
-            await _context.SaveChangesAsync();
+            await _customRecipeRepository.UpdateRecipe(recipe);
 
             return Ok(recipe);
         }
 
+        /// <summary>
+        /// Function: Delete
+        /// Purpose: Deletes a custom recipe by its ID.
+        /// Return Type: Task<IActionResult> - An asynchronous action result with a success message upon deletion.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var recipe = await _context.Recipes.FindAsync(id);
-
-            if (recipe == null)
-                return NotFound();
-
-            _context.Recipes.Remove(recipe);
-            await _context.SaveChangesAsync();
-
+            await _customRecipeRepository.DeleteRecipe(id);
             return Ok("Recipe has been successfully Deleted!!");
         }
     }

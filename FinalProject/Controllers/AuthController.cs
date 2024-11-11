@@ -2,40 +2,44 @@
 using FinalProject.DTOs;
 using FinalProject.Models;
 using FinalProject.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace FinalProject.Controllers
 {
+    /// <summary>
+    /// This class is basically handling the logics for Authenticaion -> Login and Signup
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
-        //private readonly FinalProjectDbContext _context;
         private readonly IMapper _mapper;
         private readonly PasswordHashingService _passwordHashingService;
         private readonly TokenService _tokenService;
         private readonly IAccountRepository _accountRepository;
 
-
-
+        /// <summary>
+        /// In this constructor, services such as IMapper and custom services like PasswordHashingService, TokenService, and IAccountRepository are being injected for use in the AuthController.
+        /// </summary>
+        /// <param name="mapper"></param>
+        /// <param name="passwordHashingService"></param>
+        /// <param name="tokenService"></param>
+        /// <param name="accountRepository"></param>
         public AuthController(IMapper mapper, PasswordHashingService passwordHashingService, TokenService tokenService, IAccountRepository accountRepository)
         {
-            //_context = context;
             _mapper = mapper;
             _passwordHashingService = passwordHashingService;
             _tokenService = tokenService;
             _accountRepository = accountRepository;
         }
 
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> Hello()
-        {
-            return Ok(new { Message = "You're Now Accessing the Authorized Page!!" });
-        }
-
+        /// <summary>
+        /// Funtion: Signup
+        /// Purpose: This endpoint handles the user signup process. It checks if the username already exists, hashes the password, maps the SignupDto to a User object, and adds the new user to the repository.
+        /// Return Type: Task<IActionResult> - An asynchronous action result indicating success or failure of the signup process.
+        /// </summary>
+        /// <param name="signupDto"></param>
+        /// <returns></returns>
         [HttpPost("signup")]
         public async Task<IActionResult> Signup([FromBody] SignupDto signupDto)
         {
@@ -55,6 +59,13 @@ namespace FinalProject.Controllers
             return Ok("User Created Successfully.");
         }
 
+        /// <summary>
+        /// Function: Login
+        /// Purpose: This endpoint handles user login. It checks if the provided username exists, verifies the password using BCrypt, and generates a token if the login is successful.
+        /// Return Type: Task<IActionResult> - An asynchronous action result indicating success or failure of the login process.
+        /// </summary>
+        /// <param name="loginDto"></param>
+        /// <returns></returns>
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
@@ -74,6 +85,12 @@ namespace FinalProject.Controllers
             return Ok(new { Token = token, Message = "You have been successfully logged in now" });
         }
 
+        /// <summary>
+        /// Function: GetUserInfo
+        /// Purpose: This endpoint retrieves the user information from the JWT token, specifically the user ID, and returns it in the resposne.
+        /// Return Type: IActionResult  A synchronous action result indicating the success of retrieving user info.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("userinfo")]
         public IActionResult GetUserInfo()
         {

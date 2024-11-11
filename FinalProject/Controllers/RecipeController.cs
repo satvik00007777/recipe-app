@@ -1,21 +1,37 @@
 ﻿using FinalProject.Models;
+using FinalProject.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
 namespace FinalProject.Controllers
 {
+    /// <summary>
+    /// This controller handles recipe-related operations, including retrieving recipes based on user preferences and retrieving favorite recipes.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class RecipeController : ControllerBase
     {
         private readonly HttpClient _httpClient;
-        private readonly FinalProjectDbContext _context;
+        private IRecipeRepository _recipeRepository;
 
-        public RecipeController(HttpClient httpClient, FinalProjectDbContext context) { 
+        /// <summary>
+        /// Constructor for RecipeController. Injects HttpClient and IRecipeRepository services for making external API calls and managing user recipe data.
+        /// </summary>
+        /// <param name="httpClient"></param>
+        /// <param name="recipeRepository"></param>
+        public RecipeController(HttpClient httpClient, IRecipeRepository recipeRepository) { 
             _httpClient = httpClient;
-            _context = context;
+            _recipeRepository = recipeRepository;
         }
 
+        /// <summary>
+        /// Function: GetRecipes
+        /// Purpose: Retrieves a list of recipes based on the specified user's preferences by querying an external API.
+        /// Return Type: Task<IActionResult> - An asynchronous action result containing a list of recipes or a failure message if the retrieval fails.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         [HttpGet("Getrecipes")]
         public async Task<IActionResult> GetRecipes(int userId)
         {
@@ -47,12 +63,26 @@ namespace FinalProject.Controllers
             return BadRequest("Recipes cannot be retrieved");
         }
 
+        /// <summary>
+        /// Function: GetUserPreferences
+        /// Purpose: Retrieves user preferences based on the specified user ID from the repository, defaults to "Indian" if preferences are null.
+        /// Return Type: Task<string> - An asynchronous task returning the user's preference or a default value if none exists.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         private async Task<string> GetUserPreferences(int userId)
         {
-            var user = await _context.Users.FindAsync(userId);
+            var user = await _recipeRepository.FindUser(userId);
             return user?.Preferences ?? "Indian";
         }
 
+        /// <summary>
+        /// Function: GetFavourites
+        /// Purpose: Retrieves favorite recipes based on a provided query URI by querying an external API.
+        /// Return Type: Task<IActionResult> - An asynchronous action result containing a list of favorite recipes or a failure message if the retrieval fails.
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <returns></returns>
         [HttpGet("Getfavourites")]
         public async Task<IActionResult> GetFavourites(string uri)
         {

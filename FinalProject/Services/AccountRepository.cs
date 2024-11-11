@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
-using FinalProject.Models;
+﻿using FinalProject.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinalProject.Services

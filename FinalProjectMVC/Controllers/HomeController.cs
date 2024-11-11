@@ -1,6 +1,5 @@
 using FinalProjectMVC.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace FinalProjectMVC.Controllers
 {

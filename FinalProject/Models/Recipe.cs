@@ -1,7 +1,8 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace FinalProject.Models;
 
-namespace FinalProject.Models;
-
+/// <summary>
+/// Represents a recipe entity with relevant details like title, ingredients, and instructions.
+/// </summary>
 public partial class Recipe
 {
     public int RecipeId { get; set; }

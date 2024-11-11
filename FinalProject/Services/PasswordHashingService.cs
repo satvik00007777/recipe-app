@@ -1,6 +1,4 @@
-﻿using BCrypt.Net;
-
-namespace FinalProject.Services
+﻿namespace FinalProject.Services
 {
     public class PasswordHashingService
     {

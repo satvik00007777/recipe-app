@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace FinalProject.Models;
 
-namespace FinalProject.Models;
-
+/// <summary>
+/// Represents a user entity with relevant details such as username, password, email, and associated recipes.
+/// </summary>
 public partial class User
 {
     public int UserId { get; set; }

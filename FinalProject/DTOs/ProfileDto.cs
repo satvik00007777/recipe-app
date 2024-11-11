@@ -1,5 +1,8 @@
 ﻿namespace FinalProject.DTOs
 {
+    /// <summary>
+    /// Data Transfer Object (DTO) for user profile information.
+    /// </summary>
     public class ProfileDto
     {
         public int UserId { get; set; }

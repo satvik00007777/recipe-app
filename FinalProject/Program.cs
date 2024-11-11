@@ -1,8 +1,7 @@
 using FinalProject.Models;
-using Microsoft.EntityFrameworkCore;
 using FinalProject.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -18,7 +17,6 @@ namespace FinalProject
 
             // Registering HttpClient
             builder.Services.AddHttpClient();
-            //builder.Services.AddHttpContextAccessor();
 
             // Configuring the DBContext Service
             builder.Services.AddDbContext<FinalProjectDbContext>(options =>
@@ -45,22 +43,6 @@ namespace FinalProject
                 };
             });
 
-            // Configurig the Cookie Authentication
-            //builder.Services.AddAuthentication(options =>
-            //{
-            //    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            //    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            //    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            //})
-            //.AddCookie(options =>
-            //{
-            //    options.LoginPath = "/api/auth/login";
-            //    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-            //    options.SlidingExpiration = true;
-            //    options.Cookie.HttpOnly = true;
-            //    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-            //});
-
             builder.Services.AddAuthorization();
 
 
@@ -69,6 +51,10 @@ namespace FinalProject
             builder.Services.AddScoped<AccountRepository>();
             builder.Services.AddScoped<TokenService>();
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+            builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
+            builder.Services.AddScoped<ICustomRecipeRepository, CustomRecipeRepository>();
+            builder.Services.AddScoped<IMyRecipeRepository, MyRecipeRepository>();
+            builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
 
             // Registring Swagger in Program.cs
             builder.Services.AddEndpointsApiExplorer();

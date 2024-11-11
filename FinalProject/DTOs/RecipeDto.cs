@@ -1,5 +1,8 @@
 ﻿namespace FinalProject.DTOs
 {
+    /// <summary>
+    /// Data Transfer Object (DTO) for recipe information.
+    /// </summary>
     public class RecipeDto
     {
         public int RecipeId { get; set; }

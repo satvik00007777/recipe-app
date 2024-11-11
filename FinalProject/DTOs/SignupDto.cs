@@ -1,5 +1,8 @@
 ﻿namespace FinalProject.DTOs
 {
+    /// <summary>
+    /// Data Transfer Object (DTO) for user signup information.
+    /// </summary>
     public class SignupDto
     {
         public string Name { get; set; } = null!;
